@@ -31,7 +31,8 @@ def get_img_array(data):
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
     else:
         nparr = np.reshape(
-            nparr, ((box[2] - box[0]) / 1.6, pixel_size / (box[2] - box[0]) * 1.6, 3))
+            nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
+                box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
     return nparr
 
@@ -84,9 +85,14 @@ def screenshot(path=None, region=None):
     # the properties dictionary.
     CGImageDestinationAddImage(dest, image, properties)
 
-    # When all the images (only 1 in this example) are added to the destination,
+    # When all the images (only 1 in this example) are
+    # added to the destination,
     # finalize the CGImageDestination object.
     CGImageDestinationFinalize(dest)
+
+
+def mouse_position():
+    return CG.CGEventGetLocation(CG.CGEventCreate(None))
 
 
 def mouseEvent(type, posx, posy):
@@ -98,10 +104,36 @@ def mouseEvent(type, posx, posy):
 def mousemove(posx, posy):
     mouseEvent(CG.kCGEventMouseMoved, posx, posy)
 
+def sign(n1, n2):
+    if n1 < n2:
+        return 1
+    else:
+        return -1
+
+def mousemove_visive(posx, posy):
+    current_x, current_y = mouse_position()
+    ix = sign(current_x, posx)
+    iy = sign(current_y, posy)
+    rx = range(int(current_x), int(posx), ix)
+    ry = range(int(current_y), int(posy), iy)
+    m  = max(len(rx), len(ry))
+    rx = rx + rx[-1:]*(m-len(rx))
+    ry = ry + ry[-1:]*(m-len(ry))
+
+    for x, y in zip(rx, ry):
+        mouseEvent(CG.kCGEventMouseMoved, x, y)
+        time.sleep(0.001)
+    mousemove(posx, posy)
+
 
 def mouseclick(posx, posy):
     mouseEvent(CG.kCGEventLeftMouseDown, posx, posy)
     mouseEvent(CG.kCGEventLeftMouseUp, posx, posy)
+
+
+def mouseclick_visive(posx, posy):
+    mousemove_visive(posx, posy)
+    mouseclick(posx, posy)
 
 
 def mouseclickdown(posx, posy):
@@ -113,6 +145,10 @@ def mouseclickup(posx, posy):
 
 
 def mousedrag(posx, posy):
+    mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
+
+
+def mousedrag_visive(posx, posy):
     mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
 
 
@@ -135,8 +171,8 @@ def match(small_image_path, large_image=None):
     if not large_image:
         large_image = screenshot()
 
-    large_image = large_image[::2, ::2]
-    small_image = small_image[::2, ::2]
+    large_image = large_image
+    small_image = small_image
     result = cv2.matchTemplate(small_image, large_image, method)
     print 'secs: ', time.time() - st
     # We want the minimum squared difference
@@ -162,4 +198,4 @@ if __name__ == '__main__':
     # screenshot("testscreenshot_partial.png", region=region)
 
     x, y = match("small_image.png")
-    mousemove(x, y)
+    mouseclick_visive(x, y)
