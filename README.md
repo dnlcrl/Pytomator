@@ -14,5 +14,8 @@ Run
 
 	$ brew install opencv
 
-Then follow the instructions given by Homebrew
+Then follow the instructions given by Homebrew.
 
+---
++ If you are wondering why the big words in the code, read [this](http://ergoemacs.org/emacs/proper_way_to_use_Sublime_Text_minimap.html).
++ Suggestions are welcome

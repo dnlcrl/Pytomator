@@ -15,27 +15,87 @@ import numpy as np
 dpi = 72  # My screen dpi
 box = 0, 0, 1680, 1050  # My screen pixles
 
+'''
+  .oooooo.                                         .
+ d8P'  `Y8b                                      .o8
+888      888    oooo  oooo   .oooo.   oooo d8b .o888oo   oooooooo
+888      888    `888  `888  `P  )88b  `888""8P   888    d'""7d8P
+888      888     888   888   .oP"888   888       888      .d8P'
+`88b    d88b     888   888  d8(  888   888       888 .  .d8P'  .P
+ `Y8bood8P'Ybd'  `V88V"V8P' `Y888""8o d888b      "888" d8888888P
+'''
 
-def get_img_array(data):
-    '''
-    returns nparray so cv2 can call the matchTemplate function
-    '''
-    pixel_size = len(data) / 4
-    nparr = np.fromstring(data, np.uint8)
-    nparr = np.reshape(nparr, (-1, 4))
-    nparr = np.delete(nparr, 3, 1)
 
-    if box[2] - box[0] < (box[3] - box[1]) * 1.6:
-        nparr = np.reshape(
-            nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
-        nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
+def mouse_position():
+    return CG.CGEventGetLocation(CG.CGEventCreate(None))
+
+
+def mouseEvent(type, posx, posy):
+    theEvent = CG.CGEventCreateMouseEvent(
+        None, type, (posx, posy), CG.kCGMouseButtonLeft)
+    CG.CGEventPost(CG.kCGHIDEventTap, theEvent)
+
+
+def mousemove(posx, posy):
+    mouseEvent(CG.kCGEventMouseMoved, posx, posy)
+
+
+def sign(n1, n2):
+    if n1 < n2:
+        return 1
     else:
-        nparr = np.reshape(
-            nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
-                box[2] - box[0]) * 1.6, 3))
-        nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
-    return nparr
+        return -1
 
+
+def mousemove_visive(posx, posy):
+    '''
+    This function moves the mouse pixel by pixel
+    '''
+    current_x, current_y = mouse_position()
+    ix = sign(current_x, posx)
+    iy = sign(current_y, posy)
+    rx = range(int(current_x), int(posx), ix)
+    ry = range(int(current_y), int(posy), iy)
+    m  = max(len(rx), len(ry))
+    rx = rx + rx[-1:] * (m - len(rx))
+    ry = ry + ry[-1:] * (m - len(ry))
+
+    for x, y in zip(rx, ry):
+        mouseEvent(CG.kCGEventMouseMoved, x, y)
+        time.sleep(0.001)
+    mousemove(posx, posy)
+
+
+def mouseclick(posx, posy):
+    mouseEvent(CG.kCGEventLeftMouseDown, posx, posy)
+    mouseEvent(CG.kCGEventLeftMouseUp, posx, posy)
+
+
+def mouseclick_visive(posx, posy):
+    mousemove_visive(posx, posy)
+    mouseclick(posx, posy)
+
+
+def mouseclickdown(posx, posy):
+    mouseEvent(CG.kCGEventLeftMouseDown, posx, posy)
+
+
+def mouseclickup(posx, posy):
+    mouseEvent(CG.kCGEventLeftMouseUp, posx, posy)
+
+
+def mousedrag(posx, posy):
+    mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
+
+
+def mousedrag_visive(posx, posy):  # TODO
+    mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
+
+
+def clickndrag(posx, posy, fposx, fposy):
+    mouseclickdown(posx, posy)
+    mousedrag(fposx, fposy)
+    mouseclickup(fposx, fposy)
 
 def screenshot(path=None, region=None):
     '''
@@ -56,7 +116,7 @@ def screenshot(path=None, region=None):
     if not path:
 
         # Intermediate step, get pixel data as CGDataProvider
-        prov = CG.CGImageGetDataProvider(image)
+        prov  = CG.CGImageGetDataProvider(image)
 
         # Copy data out of CGDataProvider, becomes string of bytes
         _data = CG.CGDataProviderCopyData(prov)
@@ -91,111 +151,133 @@ def screenshot(path=None, region=None):
     CGImageDestinationFinalize(dest)
 
 
-def mouse_position():
-    return CG.CGEventGetLocation(CG.CGEventCreate(None))
+'''
+ooooo      ooo                               ooooooooo.
+`888b.     `8'                               `888   `Y88.
+ 8 `88b.    8  oooo  oooo  ooo. .oo.  .oo.    888   .d88' oooo    ooo
+ 8   `88b.  8  `888  `888  `888P"Y88bP"Y88b   888ooo88P'   `88.  .8'
+ 8     `88b.8   888   888   888   888   888   888           `88..8'
+ 8       `888   888   888   888   888   888   888            `888'
+o8o        `8   `V88V"V8P' o888o o888o o888o o888o            .8'
+                                                          .o..P'
+                                                          `Y8P'
+'''
 
 
-def mouseEvent(type, posx, posy):
-    theEvent = CG.CGEventCreateMouseEvent(
-        None, type, (posx, posy), CG.kCGMouseButtonLeft)
-    CG.CGEventPost(CG.kCGHIDEventTap, theEvent)
+def get_img_array(data):
+    '''
+    returns nparray so cv2 can call the matchTemplate function
+    '''
+    pixel_size = len(data) / 4
+    nparr = np.fromstring(data, np.uint8)
+    nparr = np.reshape(nparr, (-1, 4))
+    nparr = np.delete(nparr, 3, 1)
 
-
-def mousemove(posx, posy):
-    mouseEvent(CG.kCGEventMouseMoved, posx, posy)
-
-def sign(n1, n2):
-    if n1 < n2:
-        return 1
+    if box[2] - box[0] < (box[3] - box[1]) * 1.6:
+        nparr = np.reshape(
+            nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
+        nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
     else:
-        return -1
-
-def mousemove_visive(posx, posy):
-    current_x, current_y = mouse_position()
-    ix = sign(current_x, posx)
-    iy = sign(current_y, posy)
-    rx = range(int(current_x), int(posx), ix)
-    ry = range(int(current_y), int(posy), iy)
-    m  = max(len(rx), len(ry))
-    rx = rx + rx[-1:]*(m-len(rx))
-    ry = ry + ry[-1:]*(m-len(ry))
-
-    for x, y in zip(rx, ry):
-        mouseEvent(CG.kCGEventMouseMoved, x, y)
-        time.sleep(0.001)
-    mousemove(posx, posy)
+        nparr = np.reshape(
+            nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
+                box[2] - box[0]) * 1.6, 3))
+        nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
+    return nparr
 
 
-def mouseclick(posx, posy):
-    mouseEvent(CG.kCGEventLeftMouseDown, posx, posy)
-    mouseEvent(CG.kCGEventLeftMouseUp, posx, posy)
+
+'''
+  .oooooo.                                      .oooooo.   oooooo     oooo
+ d8P'  `Y8b                                    d8P'  `Y8b   `888.     .8'
+888      888 oo.ooooo.   .ooooo.  ooo. .oo.   888            `888.   .8'
+888      888  888' `88b d88' `88b `888P"Y88b  888             `888. .8'
+888      888  888   888 888ooo888  888   888  888              `888.8'
+`88b    d88'  888   888 888    .o  888   888  `88b    ooo       `888'
+ `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o  `Y8bood8P'        `8'
+              888
+             o888o
+'''
 
 
-def mouseclick_visive(posx, posy):
-    mousemove_visive(posx, posy)
-    mouseclick(posx, posy)
-
-
-def mouseclickdown(posx, posy):
-    mouseEvent(CG.kCGEventLeftMouseDown, posx, posy)
-
-
-def mouseclickup(posx, posy):
-    mouseEvent(CG.kCGEventLeftMouseUp, posx, posy)
-
-
-def mousedrag(posx, posy):
-    mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
-
-
-def mousedrag_visive(posx, posy):
-    mouseEvent(CG.kCGEventLeftMouseDragged, posx, posy)
-
-
-def clickndrag(posx, posy, fposx, fposy):
-    mouseclickdown(posx, posy)
-    mousedrag(fposx, fposy)
-    mouseclickup(fposx, fposy)
-
-
-def match(small_image_path, large_image=None):
+def match(small_image_path, large_image=None, all_matches=None):
     '''
-    returns center coordinates of the matched image
+    returns center coordinates of the matched image(s)
     if large_image is none a screenshot is taken
+    if all_matches is not none a list of points (x,y) representing the center
+    coordinates of all the matched images is returned
     '''
-    st = time.time()
-    small_image = cv2.imread(small_image_path)
-    method = cv.CV_TM_SQDIFF_NORMED
+    small_image  = cv2.imread(small_image_path)
+    # Get the size of the template. This is the same size as the match.
+    trows, tcols = small_image.shape[:2]
+
+    if all_matches:
+        method = cv2.TM_CCOEFF_NORMED
+    else:
+        method = cv.CV_TM_SQDIFF_NORMED
 
     # Get nparray of the screenshot
     if not large_image:
         large_image = screenshot()
 
-    large_image = large_image
-    small_image = small_image
     result = cv2.matchTemplate(small_image, large_image, method)
-    print 'secs: ', time.time() - st
+
+    if all_matches:
+        threshold = 0.953  # reduce this variable to find similiar Templates
+        tenthr    = 10 * threshold
+        loc       = np.where(result >= threshold)
+        centers   = []
+        for pt in zip(*loc[::-1]):
+            center = ((pt[0] + (tcols / 2)), (pt[1] + (trows / 2)))
+            go_on = True
+            # if is a duplicate match we don't need it
+            for point in centers:
+                # check if there is already a neighbor point
+                if (((
+                        (point[0] + tenthr) > center[0]) and (
+                        (point[0] - tenthr) < center[0])) and ((
+                        (point[1] + tenthr) > center[1]) and (
+                        (point[1] - tenthr) < center[1]))):
+                    go_on = False
+                    break
+            if go_on:
+                centers.append(center)
+                # test purpose
+                cv2.rectangle(large_image, pt,
+                              (pt[0] + tcols, pt[1] + trows), (0, 0, 255), 2)
+        # test purpose
+        cv2.imshow('output', large_image)
+        cv2.waitKey(0)
+        return centers
+
     # We want the minimum squared difference
-    mn, _, mnLoc, _ = cv2.minMaxLoc(result)
+    # the get the best match fast use this:
+    minx, maxy, min_loc, max_loc = cv2.minMaxLoc(result)
 
     # Extract the coordinates of our best match
-    MPx, MPy = mnLoc
-
-    # Get the size of the template. This is the same size as the match.
-    trows, tcols = small_image.shape[:2]
-
+    MPx, MPy = min_loc
+    # calculate the center coordinates and return them
     centerx, centery = (MPx + (tcols / 2)), (MPy + (trows / 2))
-
     return centerx, centery
 
 
+
+'''
+                             o8o
+                             `"'
+ooo. .oo.  .oo.    .oooo.   oooo  ooo. .oo.
+`888P"Y88bP"Y88b  `P  )88b  `888  `888P"Y88b
+ 888   888   888   .oP"888   888   888   888
+ 888   888   888  d8(  888   888   888   888
+o888o o888o o888o `Y888""8o o888o o888o o888o
+'''
+
+
+# Testing Purpose
 if __name__ == '__main__':
-    # Capture full screen
-    # screenshot("testscreenshot_full.png")
-
-    # Capture region (100x100 box from top-left)
-    # region = CG.CGRectMake(0, 0, 100, 100)
-    # screenshot("testscreenshot_partial.png", region=region)
-
-    x, y = match("small_image.png")
-    mouseclick_visive(x, y)
+    try:
+        x, y = match("smaller.png", all_matches=True)
+        centers = [(x, y)]
+        for i in centers:
+            mouseclick_visive(i[0], i[1])  # x, y)
+    except Exception, e:
+        print e
