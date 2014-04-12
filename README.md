@@ -7,7 +7,7 @@ This Python module make use of [OpenCV][1], [NumPy][2] and [Quartz][3] to contro
 
 ## Pre-requisites
 
-In order to compile Pytomator you must have OpenCV installed on your machine.
+In order to compile Pytomator you must be on OS X 10.8 or higher and have OpenCV installed on your machine.
 
 ### Install [OpenCV](http://opencv.org/) (with [Homebrew](http://brew.sh/))
 Run 
@@ -18,15 +18,20 @@ Then follow the instructions given by Homebrew.
 
 ## Installation
 
-At the moment you can download and copy all the files in your project folder and add this lines to your file if you want only match templates and/or control the mouse
+To install pytomator run
+
+	pip install git+git://github.com/danieleciriello/Pytomator
+
+
+## Basic Usage
+
+Add this lines to your file if you want only match templates and/or control the mouse
 	
-	from pytomator import *
+	from pytomator.pytomator import *
 	
 Add also this line if you want to control the keyboard too
 
-	from keyboard import PyKeyboard
-
-## Basic Usage
+	from pytomator.keyboard import PyKeyboard
 
 You must provide an image to the match function, which return the center coordinates of the matched area, you can then click, drag, or move the mouse at such coordinates. 
 
@@ -35,10 +40,10 @@ You must provide an image to the match function, which return the center coordin
 
 You can control key pressing events in this way
 
-	ch = 'p'
-    k = PyKeyboard()
-    k.press_key(ch)
-    k.release_key(ch)
+	k = PyKeyboard()
+	for c in 'spam':
+	    k.press_key(c)
+	    k.release_key(c)
 
 ## Notes
 
