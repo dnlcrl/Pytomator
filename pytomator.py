@@ -24,7 +24,7 @@ from Quartz import kCGImagePropertyDPIWidth
 from Quartz import kCGImagePropertyDPIHeight
 from Quartz import CGImageDestinationAddImage
 from Quartz import CGImageDestinationFinalize
-from Quartz import CGEventCreateKeyboardEvent
+from keyboard import PyKeyboard
 import Quartz.CoreGraphics as CG
 import cv2
 from cv2 import cv
@@ -114,10 +114,6 @@ def clickndrag(posx, posy, fposx, fposy):
     mouseclickdown(posx, posy)
     mousedrag(fposx, fposy)
     mouseclickup(fposx, fposy)
-
-def keypress(keycode):
-    CGEventCreateKeyboardEvent(None, keycode, True)
-    CGEventCreateKeyboardEvent (None, keycode, False)
 
 
 def screenshot(path=None, region=None):
@@ -295,10 +291,17 @@ o888o o888o o888o `Y888""8o o888o o888o o888o
 
 # Testing Purpose
 if __name__ == '__main__':
-    try:
-        x, y = match("smaller.png", all_matches=True)
-        centers = [(x, y)]
-        for i in centers:
-            mouseclick_visive(i[0], i[1])  # x, y)
-    except Exception, e:
-        print e
+    x, y = match("small_image.png")
+    mouseclick_visive(x, y)
+    time.sleep(1)
+    k = PyKeyboard()
+    k.press_key('d')
+    k.release_key('d')
+
+    # try:
+    #     x, y = match("small_image.png")#, all_matches=True)
+    #     centers = [(x, y)]
+    #     for i in centers:
+    #         mouseclick_visive(i[0], i[1])  # x, y)
+    # except Exception, e:
+    #     print e
