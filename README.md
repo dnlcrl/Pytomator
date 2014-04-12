@@ -20,12 +20,12 @@ Then follow the instructions given by Homebrew.
 
 To install pytomator run
 
-	pip install git+git://github.com/danieleciriello/Pytomator
+	$ sudo pip install git+git://github.com/danieleciriello/Pytomator
 
 
 ## Basic Usage
 
-Add this lines to your file to add pytomator to your module
+Add this lines to your file to add pytomator to your Python module
 
 	from pytomator import pytomator
 
