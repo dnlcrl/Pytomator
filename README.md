@@ -25,25 +25,20 @@ To install pytomator run
 
 ## Basic Usage
 
-Add this lines to your file if you want only match templates and/or control the mouse
-	
-	from pytomator.pytomator import *
-	
-Add also this line if you want to control the keyboard too
+Add this lines to your file to add pytomator to your module
 
-	from pytomator.keyboard import PyKeyboard
+	from pytomator import pytomator
 
 You must provide an image to the match function, which return the center coordinates of the matched area, you can then click, drag, or move the mouse at such coordinates. 
 
-	x, y = match(template_path)
-    mouseclick_visive(x, y)
+	x, y = pytomator.match(template_path)
+    pytomator.mouseclick_visive(x, y)
 
 You can control key pressing events in this way
 
-	k = PyKeyboard()
 	for c in 'spam':
-	    k.press_key(c)
-	    k.release_key(c)
+	    pytomator.keyboard.press_key(c)
+	    pytomator.keyboard.release_key(c)
 
 ## Notes
 
