@@ -1,4 +1,21 @@
 # -*- coding: UTF-8 -*-
+# Copyright (c) 2014 Daniele Ciriello. All Rights Reserved.
+
+# This file is part of PyTomator.
+
+# PyTomator is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 and no later version.
+
+# PyTomator is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#See the GNU General Public License version 2 for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc. 51 Franklin
+# St, Fifth Floor, Boston, MA 02110-1301 USA.
+
 import time
 import LaunchServices
 from Cocoa import NSURL
@@ -7,6 +24,7 @@ from Quartz import kCGImagePropertyDPIWidth
 from Quartz import kCGImagePropertyDPIHeight
 from Quartz import CGImageDestinationAddImage
 from Quartz import CGImageDestinationFinalize
+from Quartz import CGEventCreateKeyboardEvent
 import Quartz.CoreGraphics as CG
 import cv2
 from cv2 import cv
@@ -56,7 +74,7 @@ def mousemove_visive(posx, posy):
     iy = sign(current_y, posy)
     rx = range(int(current_x), int(posx), ix)
     ry = range(int(current_y), int(posy), iy)
-    m  = max(len(rx), len(ry))
+    m = max(len(rx), len(ry))
     rx = rx + rx[-1:] * (m - len(rx))
     ry = ry + ry[-1:] * (m - len(ry))
 
@@ -97,6 +115,7 @@ def clickndrag(posx, posy, fposx, fposy):
     mousedrag(fposx, fposy)
     mouseclickup(fposx, fposy)
 
+
 def screenshot(path=None, region=None):
     '''
     takes a screenshot and save to path if ain't None
@@ -116,7 +135,7 @@ def screenshot(path=None, region=None):
     if not path:
 
         # Intermediate step, get pixel data as CGDataProvider
-        prov  = CG.CGImageGetDataProvider(image)
+        prov = CG.CGImageGetDataProvider(image)
 
         # Copy data out of CGDataProvider, becomes string of bytes
         _data = CG.CGDataProviderCopyData(prov)
@@ -185,7 +204,6 @@ def get_img_array(data):
     return nparr
 
 
-
 '''
   .oooooo.                                      .oooooo.   oooooo     oooo
  d8P'  `Y8b                                    d8P'  `Y8b   `888.     .8'
@@ -206,7 +224,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     if all_matches is not none a list of points (x,y) representing the center
     coordinates of all the matched images is returned
     '''
-    small_image  = cv2.imread(small_image_path)
+    small_image = cv2.imread(small_image_path)
     # Get the size of the template. This is the same size as the match.
     trows, tcols = small_image.shape[:2]
 
@@ -223,9 +241,9 @@ def match(small_image_path, large_image=None, all_matches=None):
 
     if all_matches:
         threshold = 0.953  # reduce this variable to find similiar Templates
-        tenthr    = 10 * threshold
-        loc       = np.where(result >= threshold)
-        centers   = []
+        tenthr = 10 * threshold
+        loc = np.where(result >= threshold)
+        centers = []
         for pt in zip(*loc[::-1]):
             center = ((pt[0] + (tcols / 2)), (pt[1] + (trows / 2)))
             go_on = True
@@ -258,7 +276,6 @@ def match(small_image_path, large_image=None, all_matches=None):
     # calculate the center coordinates and return them
     centerx, centery = (MPx + (tcols / 2)), (MPy + (trows / 2))
     return centerx, centery
-
 
 
 '''
