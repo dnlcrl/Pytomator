@@ -115,6 +115,10 @@ def clickndrag(posx, posy, fposx, fposy):
     mousedrag(fposx, fposy)
     mouseclickup(fposx, fposy)
 
+def keypress(keycode):
+    CGEventCreateKeyboardEvent(None, keycode, True)
+    CGEventCreateKeyboardEvent (None, keycode, False)
+
 
 def screenshot(path=None, region=None):
     '''
