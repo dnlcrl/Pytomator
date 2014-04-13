@@ -287,8 +287,8 @@ def match(small_image_path, large_image=None, all_matches=None):
                 cv2.rectangle(large_image, pt,
                               (pt[0] + tcols, pt[1] + trows), (0, 0, 255), 2)
         # test purpose
-        cv2.imshow('output', large_image)
-        cv2.waitKey(0)
+        #cv2.imshow('output', large_image)
+        #cv2.waitKey(0)
         return centers
 
     # We want the minimum squared difference
