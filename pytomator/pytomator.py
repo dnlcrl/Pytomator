@@ -248,7 +248,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     if os.path.isfile(small_image_path):
         small_image = cv2.imread(small_image_path)
     else:
-        raise Exception('Error! File' + small_image_path + " not found!")
+        raise Exception('Error! File: ' + small_image_path + " not found!")
     # Get the size of the template. This is the same size as the match.
     trows, tcols = small_image.shape[:2]
 
