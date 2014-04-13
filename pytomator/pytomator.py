@@ -269,10 +269,11 @@ def match(small_image_path, large_image=None, all_matches=None):
         loc = np.where(result >= threshold)
         centers = []
         for pt in zip(*loc[::-1]):
-            center = [((pt[0] + (tcols / 2)), (pt[1] + (trows / 2)))]
+            center = [pt[0] + (tcols / 2), pt[1] + (trows / 2)]
             go_on = True
             # if is a duplicate match we don't need it
             for point in centers:
+                import pdb; pdb.set_trace()
                 # check if there is already a neighbor point
                 if (((
                         (point[0] + tenthr) > center[0]) and (
