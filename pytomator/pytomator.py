@@ -127,8 +127,6 @@ def screenshot(path=None, region=None, box=None):
 
     >>> import Quartz.CoreGraphics as CG
     >>> region = CG.CGRectMake(0, 0, 100, 100)
-    >>> sp = ScreenPixel()
-    >>> sp.capture(region=region)
 
     The default region is CG.CGRectInfinite (captures the full screen)
     takes a screenshot and save to path if ain't None
@@ -139,7 +137,12 @@ def screenshot(path=None, region=None, box=None):
         if box is None:
             region = CG.CGRectInfinite
         else:
-            region = CG.CGRectMake(box[0], box[1], box[2], box[3])
+            if box[2] - box[0] < (box[3] - box[1]) * 1.6:
+                region = CG.CGRectMake(box[0], box[1], (
+                    box[3] - box[1]) * 1.6, box[3] - box[1])
+            else:
+                region = CG.CGRectMake(box[0], box[1], box[2] - box[0], (
+                    box[2] - box[0]) / 1.6)
 
     # Create screenshot as CGImage
     image = CG.CGWindowListCreateImage(
@@ -264,7 +267,7 @@ def match(small_image_path, large_image=None, all_matches=None):
         loc = np.where(result >= threshold)
         centers = []
         for pt in zip(*loc[::-1]):
-            center = ((pt[0] + (tcols / 2)), (pt[1] + (trows / 2)))
+            center = [((pt[0] + (tcols / 2)), (pt[1] + (trows / 2)))]
             go_on = True
             # if is a duplicate match we don't need it
             for point in centers:
@@ -294,7 +297,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     MPx, MPy = min_loc
     # calculate the center coordinates and return them
     centerx, centery = (MPx + (tcols / 2)), (MPy + (trows / 2))
-    return centerx, centery
+    return [centerx, centery]
 
 
 '''
