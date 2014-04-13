@@ -264,7 +264,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     result = cv2.matchTemplate(small_image, large_image, method)
 
     if all_matches:
-        threshold = 0.953  # reduce this variable to find similiar Templates
+        threshold = 0.7 #953  # reduce this variable to find similiar Templates
         tenthr = 10 * threshold
         loc = np.where(result >= threshold)
         centers = []
@@ -287,8 +287,8 @@ def match(small_image_path, large_image=None, all_matches=None):
                 cv2.rectangle(large_image, pt,
                               (pt[0] + tcols, pt[1] + trows), (0, 0, 255), 2)
         # test purpose
-        #cv2.imshow('output', large_image)
-        #cv2.waitKey(0)
+        cv2.imshow('output', large_image)
+        cv2.waitKey(0)
         return centers
 
     # We want the minimum squared difference
@@ -315,7 +315,7 @@ o888o o888o o888o `Y888""8o o888o o888o o888o
 
 # Testing Purpose
 if __name__ == '__main__':
-    x, y = match("small_image.png")
+    x, y = match("purple.png", all_matches=True)
     mouseclick_visive(x, y)
     time.sleep(1)
     keyboard.press_key('d')
