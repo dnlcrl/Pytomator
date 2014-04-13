@@ -29,6 +29,7 @@ import Quartz.CoreGraphics as CG
 import cv2
 from cv2 import cv
 import numpy as np
+import os
 
 #
 keyboard = PyKeyboard()
@@ -120,14 +121,25 @@ def clickndrag(posx, posy, fposx, fposy):
     mouseclickup(fposx, fposy)
 
 
-def screenshot(path=None, region=None):
+def screenshot(path=None, region=None, box=None):
     '''
+    region should be a CGRect, something like:
+
+    >>> import Quartz.CoreGraphics as CG
+    >>> region = CG.CGRectMake(0, 0, 100, 100)
+    >>> sp = ScreenPixel()
+    >>> sp.capture(region=region)
+
+    The default region is CG.CGRectInfinite (captures the full screen)
     takes a screenshot and save to path if ain't None
     if region is None an entire screenshot is taken
     '''
 
     if region is None:
-        region = CG.CGRectInfinite
+        if box is None:
+            region = CG.CGRectInfinite
+        else:
+            region = CG.CGRectMake(box[0], box[1], box[2], box[3])
 
     # Create screenshot as CGImage
     image = CG.CGWindowListCreateImage(
@@ -228,7 +240,10 @@ def match(small_image_path, large_image=None, all_matches=None):
     if all_matches is not none a list of points (x,y) representing the center
     coordinates of all the matched images is returned
     '''
-    small_image = cv2.imread(small_image_path)
+    if os.path.isfile(small_image_path):
+        small_image = cv2.imread(small_image_path)
+    else:
+        raise Exception('Error! File' + small_image_path + " not found!")
     # Get the size of the template. This is the same size as the match.
     trows, tcols = small_image.shape[:2]
 
