@@ -1,6 +1,6 @@
 # Pytomator
 
-## Vision-based Automation Python Module for OS X
+## Vision-based Automation Python 2.7 Module for OS X
 
 
 This Python module make use of [OpenCV][1], [NumPy][2] and [Quartz][3] to control mouse and keyboard events automatically, [CV] [4]'ing your OS X screen.
