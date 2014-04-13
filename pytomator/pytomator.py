@@ -211,6 +211,8 @@ def get_img_array(data):
     nparr = np.reshape(nparr, (-1, 4))
     nparr = np.delete(nparr, 3, 1)
 
+    # it seems there are problems when using a box instead of infinite
+
     if box[2] - box[0] < (box[3] - box[1]) * 1.6:
         nparr = np.reshape(
             nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
