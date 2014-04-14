@@ -30,7 +30,6 @@ import cv2
 from cv2 import cv
 import numpy as np
 import os
-
 #
 keyboard = PyKeyboard()
 
@@ -245,11 +244,13 @@ def match(small_image_path, large_image=None, all_matches=None):
     if all_matches is not none a list of points (x,y) representing the center
     coordinates of all the matched images is returned
     '''
+
     if os.path.isfile(small_image_path):
         small_image = cv2.imread(small_image_path)
     else:
         raise Exception('Error! File: ' + small_image_path + " not found!")
     # Get the size of the template. This is the same size as the match.
+
     trows, tcols = small_image.shape[:2]
 
     if all_matches:
@@ -258,9 +259,9 @@ def match(small_image_path, large_image=None, all_matches=None):
         method = cv.CV_TM_SQDIFF_NORMED
 
     # Get nparray of the screenshot
+
     if large_image is None:
         large_image = screenshot()
-
     result = cv2.matchTemplate(small_image, large_image, method)
 
     if all_matches:
