@@ -135,6 +135,7 @@ def screenshot(path=None, region=None, box=None):
     if region is None:
         if box is None:
             region = CG.CGRectInfinite
+            box = [0, 0, 1680, 1050]
         else:
             if box[2] - box[0] < (box[3] - box[1]) * 1.6:
                 region = CG.CGRectMake(box[0], box[1], (
@@ -200,12 +201,12 @@ o8o        `8   `V88V"V8P' o888o o888o o888o o888o            .8'
 '''
 
 
-def get_img_array(data, box):
+def get_img_array(data, box=None):
     '''
     returns nparray so cv2 can call the matchTemplate function
     '''
-    if box is None:
-        box = [0, 0, 1680, 1050]
+
+
     pixel_size = len(data) / 4
     nparr = np.fromstring(data, np.uint8)
     nparr = np.reshape(nparr, (-1, 4))
@@ -222,9 +223,6 @@ def get_img_array(data, box):
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
 
-    r = nparr[:, :, 0] # slices are not full copies, they cost little memory
-    g = nparr[:, :, 1]
-    b = nparr[:, :, 2]
     gray = (np.sum(nparr, axis=2) / 3).astype(np.uint8)
 
     # # numpy makes this fast:
