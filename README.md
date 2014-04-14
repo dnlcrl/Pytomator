@@ -49,7 +49,6 @@ See {file:LICENSE.txt} for license information.
 
 ## Notes
 
-+ If you are wondering why the big words in my [code](https://github.com/danieleciriello/Pytomator/blob/master/pytomator.py), read [this](http://ergoemacs.org/emacs/proper_way_to_use_Sublime_Text_minimap.html).
 + Thanks to [SavinaRoja](https://github.com/SavinaRoja) for base.py and keyboard.py ([originally](https://github.com/SavinaRoja/PyUserInput) mac.py)
 + Suggestions are welcome
 

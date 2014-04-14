@@ -37,16 +37,6 @@ keyboard = PyKeyboard()
 dpi = 72  # My screen dpi
   # My screen pixles
 
-'''
-  .oooooo.                                         .
- d8P'  `Y8b                                      .o8
-888      888    oooo  oooo   .oooo.   oooo d8b .o888oo   oooooooo
-888      888    `888  `888  `P  )88b  `888""8P   888    d'""7d8P
-888      888     888   888   .oP"888   888       888      .d8P'
-`88b    d88b     888   888  d8(  888   888       888 .  .d8P'  .P
- `Y8bood8P'Ybd'  `V88V"V8P' `Y888""8o d888b      "888" d8888888P
-'''
-
 
 def mouse_position():
     return CG.CGEventGetLocation(CG.CGEventCreate(None))
@@ -190,19 +180,6 @@ def screenshot(path=None, region=None, box=None):
     CGImageDestinationFinalize(dest)
 
 
-'''
-ooooo      ooo                               ooooooooo.
-`888b.     `8'                               `888   `Y88.
- 8 `88b.    8  oooo  oooo  ooo. .oo.  .oo.    888   .d88' oooo    ooo
- 8   `88b.  8  `888  `888  `888P"Y88bP"Y88b   888ooo88P'   `88.  .8'
- 8     `88b.8   888   888   888   888   888   888           `88..8'
- 8       `888   888   888   888   888   888   888            `888'
-o8o        `8   `V88V"V8P' o888o o888o o888o o888o            .8'
-                                                          .o..P'
-                                                          `Y8P'
-'''
-
-
 def get_img_array(data, box=None):
     '''
     returns nparray so cv2 can call the matchTemplate function
@@ -213,7 +190,6 @@ def get_img_array(data, box=None):
     nparr = np.reshape(nparr, (-1, 4))
     nparr = np.delete(nparr, 3, 1)
 
-    # it seems there are problems when using a box instead of infinite
     if box[2] - box[0] < (box[3] - box[1]) * 1.6:
         nparr = np.reshape(
             nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
@@ -224,23 +200,9 @@ def get_img_array(data, box=None):
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
 
+    #rgb to grayscale image
     gray = (np.sum(nparr, axis=2) / 3).astype(np.uint8)
-    # # numpy makes this fast:
-    #gray = (r*2220 + g*7067 + b*7013) / 10000 # result is a 2D array
     return gray
-
-
-'''
-  .oooooo.                                      .oooooo.   oooooo     oooo
- d8P'  `Y8b                                    d8P'  `Y8b   `888.     .8'
-888      888 oo.ooooo.   .ooooo.  ooo. .oo.   888            `888.   .8'
-888      888  888' `88b d88' `88b `888P"Y88b  888             `888. .8'
-888      888  888   888 888ooo888  888   888  888              `888.8'
-`88b    d88'  888   888 888    .o  888   888  `88b    ooo       `888'
- `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o  `Y8bood8P'        `8'
-              888
-             o888o
-'''
 
 
 def match(small_image_path, large_image=None, all_matches=None):
@@ -252,6 +214,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     '''
 
     if os.path.isfile(small_image_path):
+        #we use grayscale to optimize the execution time
         small_image = cv2.imread(small_image_path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     else:
         raise Exception('Error! File: ' + small_image_path + " not found!")
@@ -270,7 +233,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     result = cv2.matchTemplate(small_image, large_image, method)
 
     if all_matches:
-        threshold = 0.7 #953  # reduce this variable to find similiar Templates
+        threshold = 0.7  # 953  # reduce this variable to find similiar Templates
         tenthr = 10 * threshold
         loc = np.where(result >= threshold)
         centers = []
@@ -289,10 +252,10 @@ def match(small_image_path, large_image=None, all_matches=None):
                     break
             if go_on:
                 centers.append(center)
-                # test purpose
-                cv2.rectangle(large_image, pt,
-                              (pt[0] + tcols, pt[1] + trows), (0, 0, 255), 2)
-        # test purpose
+                # uncomment to see the results, draw rectangle
+                # cv2.rectangle(large_image, pt,
+                              #(pt[0] + tcols, pt[1] + trows), (0, 0, 255), 2)
+        # uncomment to see the results
         #cv2.imshow('output', large_image)
         #cv2.waitKey(0)
         return centers
@@ -306,17 +269,6 @@ def match(small_image_path, large_image=None, all_matches=None):
     # calculate the center coordinates and return them
     centerx, centery = (MPx + (tcols / 2)), (MPy + (trows / 2))
     return [centerx, centery]
-
-
-'''
-                             o8o
-                             `"'
-ooo. .oo.  .oo.    .oooo.   oooo  ooo. .oo.
-`888P"Y88bP"Y88b  `P  )88b  `888  `888P"Y88b
- 888   888   888   .oP"888   888   888   888
- 888   888   888  d8(  888   888   888   888
-o888o o888o o888o `Y888""8o o888o o888o o888o
-'''
 
 
 # Testing Purpose
