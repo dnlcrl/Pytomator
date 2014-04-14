@@ -210,7 +210,6 @@ def get_img_array(data):
     nparr = np.delete(nparr, 3, 1)
 
     # it seems there are problems when using a box instead of infinite
-    #import pdb; pdb.set_trace()
     if box[2] - box[0] < (box[3] - box[1]) * 1.6:
         nparr = np.reshape(
             nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
@@ -220,8 +219,6 @@ def get_img_array(data):
             nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
-    if greyscale:
-        _nparr =
     return nparr
 
 
@@ -260,7 +257,6 @@ def match(small_image_path, large_image=None, all_matches=None):
         method = cv.CV_TM_SQDIFF_NORMED
 
     # Get nparray of the screenshot
-    import pdb; pdb.set_trace()
 
     if large_image is None:
         large_image = screenshot()
