@@ -35,7 +35,7 @@ keyboard = PyKeyboard()
 
 
 dpi = 72  # My screen dpi
-box = 0, 0, 1680, 1050  # My screen pixles
+  # My screen pixles
 
 '''
   .oooooo.                                         .
@@ -161,7 +161,7 @@ def screenshot(path=None, region=None, box=None):
         # Get width/height of image
         #width = CG.CGImageGetWidth(image)
         #height = CG.CGImageGetHeight(image)
-        return get_img_array(_data)
+        return get_img_array(_data, box)
 
     url = NSURL.fileURLWithPath_(path)
 
@@ -200,10 +200,12 @@ o8o        `8   `V88V"V8P' o888o o888o o888o o888o            .8'
 '''
 
 
-def get_img_array(data):
+def get_img_array(data, box):
     '''
     returns nparray so cv2 can call the matchTemplate function
     '''
+    if box is None:
+        box = [0, 0, 1680, 1050]
     pixel_size = len(data) / 4
     nparr = np.fromstring(data, np.uint8)
     nparr = np.reshape(nparr, (-1, 4))
