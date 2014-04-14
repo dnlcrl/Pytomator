@@ -137,7 +137,7 @@ def screenshot(path=None, region=None, box=None):
             region = CG.CGRectInfinite
             box = [0, 0, 1680, 1050]
         else:
-            region = CG.CGRectMake(box[0], box[1], box[2], box[3])
+            region = CG.CGRectMake(box[0], box[1], box[2]-box[0], box[3]-box[1])
 
             # if box[2] - box[0] < (box[3] - box[1]) * 1.6:
             #     region = CG.CGRectMake(box[0], box[1], (
@@ -208,7 +208,6 @@ def get_img_array(data, box=None):
     returns nparray so cv2 can call the matchTemplate function
     '''
 
-
     pixel_size = len(data) / 4
     nparr = np.fromstring(data, np.uint8)
     nparr = np.reshape(nparr, (-1, 4))
@@ -216,19 +215,16 @@ def get_img_array(data, box=None):
 
     # it seems there are problems when using a box instead of infinite
     if box[2] - box[0] < (box[3] - box[1]) * 1.6:
-        print '1'
         nparr = np.reshape(
             nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
     else:
-        print '2'
         nparr = np.reshape(
             nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
 
     gray = (np.sum(nparr, axis=2) / 3).astype(np.uint8)
-
     # # numpy makes this fast:
     #gray = (r*2220 + g*7067 + b*7013) / 10000 # result is a 2D array
     return gray
