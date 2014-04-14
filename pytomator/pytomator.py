@@ -161,7 +161,7 @@ def screenshot(path=None, region=None, box=None):
         # Get width/height of image
         #width = CG.CGImageGetWidth(image)
         #height = CG.CGImageGetHeight(image)
-        return rgb2gray(get_img_array(_data))
+        return get_img_array(_data)
 
     url = NSURL.fileURLWithPath_(path)
 
@@ -219,7 +219,15 @@ def get_img_array(data):
             nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
-    return nparr
+
+    r = nparr[:, :, 0] # slices are not full copies, they cost little memory
+    g = nparr[:, :, 1]
+    b = nparr[:, :, 2]
+    gray = (np.sum(nparr, axis=2) / 3).astype(np.uint8)
+
+    # # numpy makes this fast:
+    #gray = (r*2220 + g*7067 + b*7013) / 10000 # result is a 2D array
+    return gray
 
 
 '''
@@ -248,7 +256,6 @@ def match(small_image_path, large_image=None, all_matches=None):
     else:
         raise Exception('Error! File: ' + small_image_path + " not found!")
     # Get the size of the template. This is the same size as the match.
-
     trows, tcols = small_image.shape[:2]
 
     if all_matches:
