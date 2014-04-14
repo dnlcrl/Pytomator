@@ -252,18 +252,14 @@ def match(small_image_path, large_image=None, all_matches=None):
     # Get the size of the template. This is the same size as the match.
     trows, tcols = small_image.shape[:2]
 
-    if all_matches:
-        method = cv2.TM_CCOEFF_NORMED
-    else:
-        method = cv.CV_TM_SQDIFF_NORMED
-
     # Get nparray of the screenshot
-    if not large_image:
+    if large_image is not None:
         large_image = screenshot()
 
     result = cv2.matchTemplate(small_image, large_image, method)
 
-    if all_matches:
+    if all_matches is not None:
+        method = cv2.TM_CCOEFF_NORMED
         threshold = 0.7 #953  # reduce this variable to find similiar Templates
         tenthr = 10 * threshold
         loc = np.where(result >= threshold)
@@ -290,6 +286,8 @@ def match(small_image_path, large_image=None, all_matches=None):
         #cv2.imshow('output', large_image)
         #cv2.waitKey(0)
         return centers
+    esle:
+        method = cv.CV_TM_SQDIFF_NORMED
 
     # We want the minimum squared difference
     # the get the best match fast use this:
