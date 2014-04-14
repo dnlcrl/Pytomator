@@ -286,7 +286,7 @@ def match(small_image_path, large_image=None, all_matches=None):
         #cv2.imshow('output', large_image)
         #cv2.waitKey(0)
         return centers
-    esle:
+    else:
         method = cv.CV_TM_SQDIFF_NORMED
 
     # We want the minimum squared difference
