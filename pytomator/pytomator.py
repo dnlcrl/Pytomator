@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc. 51 Franklin
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
-
+from skimage.color import rgb2gray
 import time
 import LaunchServices
 from Cocoa import NSURL
@@ -161,8 +161,7 @@ def screenshot(path=None, region=None, box=None):
         # Get width/height of image
         #width = CG.CGImageGetWidth(image)
         #height = CG.CGImageGetHeight(image)
-
-        return get_img_array(_data)
+        return rgb2gray(get_img_array(_data))
 
     url = NSURL.fileURLWithPath_(path)
 
@@ -211,7 +210,7 @@ def get_img_array(data):
     nparr = np.delete(nparr, 3, 1)
 
     # it seems there are problems when using a box instead of infinite
-
+    #import pdb; pdb.set_trace()
     if box[2] - box[0] < (box[3] - box[1]) * 1.6:
         nparr = np.reshape(
             nparr, (box[3] - box[1], pixel_size / (box[3] - box[1]), 3))
@@ -221,6 +220,8 @@ def get_img_array(data):
             nparr, ((box[2] - box[0]) / 1.6, pixel_size / (
                 box[2] - box[0]) * 1.6, 3))
         nparr = nparr[0:box[3] - box[1], 0:box[2] - box[0]]
+    if greyscale:
+        _nparr =
     return nparr
 
 
@@ -246,7 +247,7 @@ def match(small_image_path, large_image=None, all_matches=None):
     '''
 
     if os.path.isfile(small_image_path):
-        small_image = cv2.imread(small_image_path)
+        small_image = cv2.imread(small_image_path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     else:
         raise Exception('Error! File: ' + small_image_path + " not found!")
     # Get the size of the template. This is the same size as the match.
@@ -259,6 +260,7 @@ def match(small_image_path, large_image=None, all_matches=None):
         method = cv.CV_TM_SQDIFF_NORMED
 
     # Get nparray of the screenshot
+    import pdb; pdb.set_trace()
 
     if large_image is None:
         large_image = screenshot()
