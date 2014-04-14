@@ -137,12 +137,14 @@ def screenshot(path=None, region=None, box=None):
             region = CG.CGRectInfinite
             box = [0, 0, 1680, 1050]
         else:
-            if box[2] - box[0] < (box[3] - box[1]) * 1.6:
-                region = CG.CGRectMake(box[0], box[1], (
-                    box[3] - box[1]) * 1.6, box[3] - box[1])
-            else:
-                region = CG.CGRectMake(box[0], box[1], box[2] - box[0], (
-                    box[2] - box[0]) / 1.6)
+            region = CG.CGRectMake(box[0], box[1], box[2], box[3])
+
+            # if box[2] - box[0] < (box[3] - box[1]) * 1.6:
+            #     region = CG.CGRectMake(box[0], box[1], (
+            #         box[3] - box[1]) * 1.6, box[3] - box[1])
+            # else:
+            #     region = CG.CGRectMake(box[0], box[1], box[2] - box[0], (
+            #         box[2] - box[0]) / 1.6)
 
     # Create screenshot as CGImage
     image = CG.CGWindowListCreateImage(
