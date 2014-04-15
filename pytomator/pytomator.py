@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc. 51 Franklin
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
-from skimage.color import rgb2gray
+
 import time
 import LaunchServices
 from Cocoa import NSURL
@@ -24,6 +24,9 @@ from Quartz import kCGImagePropertyDPIWidth
 from Quartz import kCGImagePropertyDPIHeight
 from Quartz import CGImageDestinationAddImage
 from Quartz import CGImageDestinationFinalize
+from Quartz import CGDisplayBounds
+from Quartz import CGMainDisplayID
+
 from keyboard import PyKeyboard
 import Quartz.CoreGraphics as CG
 import cv2
@@ -34,8 +37,7 @@ import os
 keyboard = PyKeyboard()
 
 
-dpi = 72  # My screen dpi
-  # My screen pixles
+DPI = 72  # My screen dpi
 
 
 def mouse_position():
@@ -124,8 +126,10 @@ def screenshot(path=None, region=None, box=None):
 
     if region is None:
         if box is None:
+            pixrect = CGDisplayBounds(CGMainDisplayID())
+            screen_box = [pixrect[0][0], pixrect[0][1], pixrect[1][0], pixrect[1][1]]
             region = CG.CGRectInfinite
-            box = [0, 0, 1680, 1050]
+            box = screen_box
         else:
             region = CG.CGRectMake(box[0], box[1], box[2]-box[0], box[3]-box[1])
 
@@ -166,8 +170,8 @@ def screenshot(path=None, region=None, box=None):
     )
 
     properties = {
-        kCGImagePropertyDPIWidth: dpi,
-        kCGImagePropertyDPIHeight: dpi,
+        kCGImagePropertyDPIWidth: DPI,
+        kCGImagePropertyDPIHeight: DPI,
     }
 
     # Add the image to the destination, characterizing the image with
