@@ -44,7 +44,7 @@ You can control key pressing events in this way
 
 Copyright (c) 2014 Daniele Ciriello
 
-See {file:LICENSE.txt} for license information.
+See [LICENSE.txt](https://github.com/danieleciriello/Pytomator/blob/master/LICENSE.txt) for license information.
 
 
 ## Notes
