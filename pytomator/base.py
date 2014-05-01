@@ -1,17 +1,17 @@
-#Copyright 2013 Paul Barton
+# Copyright 2013 Paul Barton
 #
-#This program is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
-#along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 As the base file, this provides a rough operational model along with the
@@ -23,6 +23,7 @@ from threading import Thread
 
 
 class PyKeyboardMeta(object):
+
     """
     The base class for PyKeyboard. Represents basic operational model.
     """
@@ -53,8 +54,8 @@ class PyKeyboardMeta(object):
                     time.sleep(interval)
                     self.press_key(self.shift_key)
                     shift = True
-                #In order to avoid tap_key pressing Shift, we need to pass the
-                #unshifted form of the character
+                # In order to avoid tap_key pressing Shift, we need to pass the
+                # unshifted form of the character
                 if char in '<>?:"{}|~!@#$%^&*()_+':
                     ch_index = '<>?:"{}|~!@#$%^&*()_+'.index(char)
                     unshifted_char = ",./;'[]\\`1234567890-="[ch_index]
@@ -93,28 +94,29 @@ class PyKeyboardMeta(object):
 
 
 class PyKeyboardEventMeta(Thread):
+
     """
     The base class for PyKeyboard. Represents basic operational model.
     """
 
-    #One of the most variable components of keyboards throughout history and
-    #across manufacturers is the Modifier Key...
-    #I am attempting to cover a lot of bases to make using PyKeyboardEvent
-    #simpler, without digging a bunch of traps for incompatibilities between
-    #platforms.
+    # One of the most variable components of keyboards throughout history and
+    # across manufacturers is the Modifier Key...
+    # I am attempting to cover a lot of bases to make using PyKeyboardEvent
+    # simpler, without digging a bunch of traps for incompatibilities between
+    # platforms.
 
-    #Keeping track of the keyboard's state is not only necessary at times to
-    #correctly interpret character identities in keyboard events, but should
-    #also enable a user to easily query modifier states without worrying about
-    #chaining event triggers for mod-combinations
+    # Keeping track of the keyboard's state is not only necessary at times to
+    # correctly interpret character identities in keyboard events, but should
+    # also enable a user to easily query modifier states without worrying about
+    # chaining event triggers for mod-combinations
 
-    #The keyboard's state will be represented by an integer, the individual
-    #mod keys by a bit mask of that integer
+    # The keyboard's state will be represented by an integer, the individual
+    # mod keys by a bit mask of that integer
     state = 0
 
-    #Each platform should assign, where applicable/possible, the bit masks for
-    #modifier keys initially set to 0 here. Not all modifiers are recommended
-    #for cross-platform use
+    # Each platform should assign, where applicable/possible, the bit masks for
+    # modifier keys initially set to 0 here. Not all modifiers are recommended
+    # for cross-platform use
     modifier_bits = {'Shift': 1,
                      'Lock': 2,
                      'Control': 4,
@@ -136,7 +138,7 @@ class PyKeyboardEventMeta(Thread):
                      'Super': 0,  # X11 key, sometimes equivalent to Windows
                      'Windows': 0}  # Windows key, sometimes equivalent to Super
 
-    #Make the modifiers dictionary for individual states, setting all to off
+    # Make the modifiers dictionary for individual states, setting all to off
     modifiers = {}
     for key in modifier_bits.keys():
         modifiers[key] = False
