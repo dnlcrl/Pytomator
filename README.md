@@ -1,6 +1,6 @@
--> ![Pytomator](icon.png) <-
+![Pytomator](icon.png)
  
--> # Pytomator <-
+# Pytomator
 
 ## Vision-based Automation Python 2.7 Module for OS X
 
