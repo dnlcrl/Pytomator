@@ -272,20 +272,3 @@ def match(small_image_path, large_image=None, all_matches=None):
     # calculate the center coordinates and return them
     centerx, centery = (MPx + (tcols / 2)), (MPy + (trows / 2))
     return [centerx, centery]
-
-
-# Testing Purpose
-if __name__ == '__main__':
-    x, y = match("purple.png", all_matches=True)
-    mouseclick_visive(x, y)
-    time.sleep(1)
-    keyboard.press_key('d')
-    keyboard.release_key('d')
-
-    # try:
-    #     x, y = match("small_image.png")#, all_matches=True)
-    #     centers = [(x, y)]
-    #     for i in centers:
-    #         mouseclick_visive(i[0], i[1])  # x, y)
-    # except Exception, e:
-    #     print e
