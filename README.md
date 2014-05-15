@@ -1,3 +1,5 @@
+![Pytomator](icon.png)
+
 # Pytomator
 
 ## Vision-based Automation Python 2.7 Module for OS X
